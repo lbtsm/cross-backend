@@ -2,11 +2,12 @@ package jobs
 
 import (
 	"fmt"
+	models2 "go-admin/app/jobs/models"
+	"time"
+
 	log "github.com/go-admin-team/go-admin-core/logger"
 	"github.com/go-admin-team/go-admin-core/sdk"
-	models2 "go-admin/app/jobs/models"
 	"gorm.io/gorm"
-	"time"
 
 	"github.com/robfig/cron/v3"
 
@@ -48,35 +49,27 @@ func (e *ExecJob) Run() {
 	}
 	err := CallExec(obj.(JobExec), e.Args)
 	if err != nil {
-		// 如果失败暂停一段时间重试
 		fmt.Println(time.Now().Format(timeFormat), " [ERROR] mission failed! ", err)
+		return
 	}
-	// 结束时间
 	endTime := time.Now()
-
-	// 执行时间
 	latencyTime := endTime.Sub(startTime)
-	//TODO: 待完善部分
 	//str := time.Now().Format(timeFormat) + " [INFO] JobCore " + string(e.EntryId) + "exec success , spend :" + latencyTime.String()
 	//ws.SendAll(str)
 	log.Infof("[Job] JobCore %s exec success , spend :%v", e.Name, latencyTime)
 	return
 }
 
-// Run http 任务接口
 func (h *HttpJob) Run() {
 
 	startTime := time.Now()
 	var count = 0
 	var err error
 	var str string
-	/* 循环 */
 LOOP:
 	if count < retryCount {
-		/* 跳过迭代 */
 		str, err = pkg.Get(h.InvokeTarget)
 		if err != nil {
-			// 如果失败暂停一段时间重试
 			log.Warnf("[Job] mission failed! %v", err)
 			log.Warnf("[Job] Retry after the task fails %d seconds! %s \n", (count+1)*5, str)
 			time.Sleep(time.Duration(count+1) * 5 * time.Second)
@@ -84,18 +77,14 @@ LOOP:
 			goto LOOP
 		}
 	}
-	// 结束时间
+
 	endTime := time.Now()
 
-	// 执行时间
 	latencyTime := endTime.Sub(startTime)
-	//TODO: 待完善部分
 
 	log.Infof("[Job] JobCore %s exec success , spend :%v", h.Name, latencyTime)
 	return
 }
-
-// Setup 初始化
 func Setup(dbs map[string]*gorm.DB) {
 
 	fmt.Println(time.Now().Format(timeFormat), " [INFO] JobCore Starting...")
