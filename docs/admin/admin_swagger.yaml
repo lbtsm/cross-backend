@@ -170,14 +170,10 @@ definitions:
     type: object
   dto.SysDictDataDeleteReq:
     properties:
-      createBy:
-        type: integer
       ids:
         items:
           type: integer
         type: array
-      updateBy:
-        type: integer
     type: object
   dto.SysDictDataGetAllResp:
     properties:
@@ -357,7 +353,7 @@ definitions:
         type: integer
       sysApi:
         items:
-          $ref: '#/definitions/models.SysApi'
+          $ref: '#/definitions/go-admin_app_admin_models.SysApi'
         type: array
       title:
         description: 显示名称
@@ -420,7 +416,7 @@ definitions:
         type: integer
       sysApi:
         items:
-          $ref: '#/definitions/models.SysApi'
+          $ref: '#/definitions/go-admin_app_admin_models.SysApi'
         type: array
       title:
         description: 显示名称
@@ -533,11 +529,11 @@ definitions:
         type: string
       sysDept:
         items:
-          $ref: '#/definitions/models.SysDept'
+          $ref: '#/definitions/go-admin_app_admin_models.SysDept'
         type: array
       sysMenu:
         items:
-          $ref: '#/definitions/models.SysMenu'
+          $ref: '#/definitions/go-admin_app_admin_models.SysMenu'
         type: array
       updateBy:
         type: integer
@@ -581,11 +577,11 @@ definitions:
         type: string
       sysDept:
         items:
-          $ref: '#/definitions/models.SysDept'
+          $ref: '#/definitions/go-admin_app_admin_models.SysDept'
         type: array
       sysMenu:
         items:
-          $ref: '#/definitions/models.SysMenu'
+          $ref: '#/definitions/go-admin_app_admin_models.SysMenu'
         type: array
       updateBy:
         type: integer
@@ -683,23 +679,7 @@ definitions:
         description: 用户ID
         type: integer
     type: object
-  handler.Login:
-    properties:
-      code:
-        type: string
-      password:
-        type: string
-      username:
-        type: string
-      uuid:
-        type: string
-    required:
-    - code
-    - password
-    - username
-    - uuid
-    type: object
-  models.SysApi:
+  go-admin_app_admin_models.SysApi:
     properties:
       action:
         type: string
@@ -722,7 +702,7 @@ definitions:
       updatedAt:
         type: string
     type: object
-  models.SysConfig:
+  go-admin_app_admin_models.SysConfig:
     properties:
       configKey:
         type: string
@@ -747,11 +727,11 @@ definitions:
       updatedAt:
         type: string
     type: object
-  models.SysDept:
+  go-admin_app_admin_models.SysDept:
     properties:
       children:
         items:
-          $ref: '#/definitions/models.SysDept'
+          $ref: '#/definitions/go-admin_app_admin_models.SysDept'
         type: array
       createBy:
         type: integer
@@ -792,7 +772,7 @@ definitions:
       updatedAt:
         type: string
     type: object
-  models.SysMenu:
+  go-admin_app_admin_models.SysMenu:
     properties:
       action:
         type: string
@@ -804,7 +784,7 @@ definitions:
         type: string
       children:
         items:
-          $ref: '#/definitions/models.SysMenu'
+          $ref: '#/definitions/go-admin_app_admin_models.SysMenu'
         type: array
       component:
         type: string
@@ -844,7 +824,7 @@ definitions:
         type: integer
       sysApi:
         items:
-          $ref: '#/definitions/models.SysApi'
+          $ref: '#/definitions/go-admin_app_admin_models.SysApi'
         type: array
       title:
         type: string
@@ -853,6 +833,41 @@ definitions:
       updatedAt:
         type: string
       visible:
+        type: string
+    type: object
+  handler.Login:
+    properties:
+      code:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+      uuid:
+        type: string
+    required:
+    - code
+    - password
+    - username
+    - uuid
+    type: object
+  models.CrossData:
+    properties:
+      chain:
+        type: string
+      chain_and_gas_limit:
+        type: string
+      height:
+        type: integer
+      log_index:
+        type: integer
+      order_id:
+        type: string
+      timestamp:
+        type: integer
+      topic:
+        type: string
+      tx_hash:
         type: string
     type: object
   response.Page:
@@ -898,8 +913,6 @@ definitions:
       createBy:
         type: integer
       createdAt:
-        type: string
-      deletedAt:
         type: string
       dictType:
         type: string
@@ -988,8 +1001,6 @@ definitions:
       crud:
         type: boolean
       dataScope:
-        type: string
-      deletedAt:
         type: string
       functionAuthor:
         description: 功能作者
@@ -1103,6 +1114,90 @@ paths:
       summary: 获取验证码
       tags:
       - 登陆
+  /api/v1/check/tss:
+    get:
+      description: 获取tss健康检查列表
+      parameters:
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.CrossData'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取tss健康检查列表
+      tags:
+      - tss健康检查管理
+  /api/v1/cross:
+    get:
+      description: 获取跨链数据列表
+      parameters:
+      - description: 来源链
+        in: query
+        name: srcChain
+        type: string
+      - description: 目标链
+        in: query
+        name: dstChain
+        type: string
+      - description: 源链交易hash
+        in: query
+        name: srcTxHash
+        type: string
+      - description: 跨链订单ID
+        in: query
+        name: orderId
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.CrossData'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取跨链数据列表
+      tags:
+      - 跨链数据管理
   /api/v1/db/columns/page:
     get:
       description: 数据库表列分页列表 / database table column page list
@@ -1990,19 +2085,6 @@ paths:
       summary: 修改用户角色
       tags:
       - 角色/Role
-  /api/v1/server-monitor:
-    get:
-      description: 获取JSON
-      responses:
-        "200":
-          description: '{"code": 200, "data": [...]}'
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: 系统信息
-      tags:
-      - 系统信息
   /api/v1/set-config:
     get:
       consumes:
@@ -2107,7 +2189,7 @@ paths:
                   - properties:
                       list:
                         items:
-                          $ref: '#/definitions/models.SysApi'
+                          $ref: '#/definitions/go-admin_app_admin_models.SysApi'
                         type: array
                     type: object
               type: object
@@ -2132,7 +2214,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/models.SysApi'
+                  $ref: '#/definitions/go-admin_app_admin_models.SysApi'
               type: object
       security:
       - Bearer: []
@@ -2221,7 +2303,7 @@ paths:
                   - properties:
                       list:
                         items:
-                          $ref: '#/definitions/models.SysApi'
+                          $ref: '#/definitions/go-admin_app_admin_models.SysApi'
                         type: array
                     type: object
               type: object

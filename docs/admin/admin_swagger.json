@@ -78,6 +78,156 @@
                 }
             }
         },
+        "/api/v1/check/tss": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取tss健康检查列表",
+                "tags": [
+                    "tss健康检查管理"
+                ],
+                "summary": "获取tss健康检查列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.CrossData"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/cross": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取跨链数据列表",
+                "tags": [
+                    "跨链数据管理"
+                ],
+                "summary": "获取跨链数据列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "来源链",
+                        "name": "srcChain",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标链",
+                        "name": "dstChain",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "源链交易hash",
+                        "name": "srcTxHash",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "跨链订单ID",
+                        "name": "orderId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.CrossData"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/db/columns/page": {
             "get": {
                 "description": "数据库表列分页列表 / database table column page list",
@@ -1501,28 +1651,6 @@
                 }
             }
         },
-        "/api/v1/server-monitor": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "获取JSON",
-                "tags": [
-                    "系统信息"
-                ],
-                "summary": "系统信息",
-                "responses": {
-                    "200": {
-                        "description": "{\"code\": 200, \"data\": [...]}",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/set-config": {
             "get": {
                 "security": [
@@ -1670,7 +1798,7 @@
                                                         "list": {
                                                             "type": "array",
                                                             "items": {
-                                                                "$ref": "#/definitions/models.SysApi"
+                                                                "$ref": "#/definitions/go-admin_app_admin_models.SysApi"
                                                             }
                                                         }
                                                     }
@@ -1748,7 +1876,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.SysApi"
+                                            "$ref": "#/definitions/go-admin_app_admin_models.SysApi"
                                         }
                                     }
                                 }
@@ -1864,7 +1992,7 @@
                                                         "list": {
                                                             "type": "array",
                                                             "items": {
-                                                                "$ref": "#/definitions/models.SysApi"
+                                                                "$ref": "#/definitions/go-admin_app_admin_models.SysApi"
                                                             }
                                                         }
                                                     }
@@ -3032,17 +3160,11 @@
         "dto.SysDictDataDeleteReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -3310,7 +3432,7 @@
                 "sysApi": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.SysApi"
+                        "$ref": "#/definitions/go-admin_app_admin_models.SysApi"
                     }
                 },
                 "title": {
@@ -3397,7 +3519,7 @@
                 "sysApi": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.SysApi"
+                        "$ref": "#/definitions/go-admin_app_admin_models.SysApi"
                     }
                 },
                 "title": {
@@ -3565,13 +3687,13 @@
                 "sysDept": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.SysDept"
+                        "$ref": "#/definitions/go-admin_app_admin_models.SysDept"
                     }
                 },
                 "sysMenu": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.SysMenu"
+                        "$ref": "#/definitions/go-admin_app_admin_models.SysMenu"
                     }
                 },
                 "updateBy": {
@@ -3634,13 +3756,13 @@
                 "sysDept": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.SysDept"
+                        "$ref": "#/definitions/go-admin_app_admin_models.SysDept"
                     }
                 },
                 "sysMenu": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.SysMenu"
+                        "$ref": "#/definitions/go-admin_app_admin_models.SysMenu"
                     }
                 },
                 "updateBy": {
@@ -3786,30 +3908,7 @@
                 }
             }
         },
-        "handler.Login": {
-            "type": "object",
-            "required": [
-                "code",
-                "password",
-                "username",
-                "uuid"
-            ],
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                },
-                "uuid": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.SysApi": {
+        "go-admin_app_admin_models.SysApi": {
             "type": "object",
             "properties": {
                 "action": {
@@ -3844,7 +3943,7 @@
                 }
             }
         },
-        "models.SysConfig": {
+        "go-admin_app_admin_models.SysConfig": {
             "type": "object",
             "properties": {
                 "configKey": {
@@ -3882,13 +3981,13 @@
                 }
             }
         },
-        "models.SysDept": {
+        "go-admin_app_admin_models.SysDept": {
             "type": "object",
             "properties": {
                 "children": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.SysDept"
+                        "$ref": "#/definitions/go-admin_app_admin_models.SysDept"
                     }
                 },
                 "createBy": {
@@ -3946,7 +4045,7 @@
                 }
             }
         },
-        "models.SysMenu": {
+        "go-admin_app_admin_models.SysMenu": {
             "type": "object",
             "properties": {
                 "action": {
@@ -3964,7 +4063,7 @@
                 "children": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.SysMenu"
+                        "$ref": "#/definitions/go-admin_app_admin_models.SysMenu"
                     }
                 },
                 "component": {
@@ -4024,7 +4123,7 @@
                 "sysApi": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.SysApi"
+                        "$ref": "#/definitions/go-admin_app_admin_models.SysApi"
                     }
                 },
                 "title": {
@@ -4037,6 +4136,58 @@
                     "type": "string"
                 },
                 "visible": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.Login": {
+            "type": "object",
+            "required": [
+                "code",
+                "password",
+                "username",
+                "uuid"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CrossData": {
+            "type": "object",
+            "properties": {
+                "chain": {
+                    "type": "string"
+                },
+                "chain_and_gas_limit": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer"
+                },
+                "log_index": {
+                    "type": "integer"
+                },
+                "order_id": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
+                },
+                "topic": {
+                    "type": "string"
+                },
+                "tx_hash": {
                     "type": "string"
                 }
             }
@@ -4106,9 +4257,6 @@
                     "type": "integer"
                 },
                 "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
                     "type": "string"
                 },
                 "dictType": {
@@ -4241,9 +4389,6 @@
                     "type": "boolean"
                 },
                 "dataScope": {
-                    "type": "string"
-                },
-                "deletedAt": {
                     "type": "string"
                 },
                 "functionAuthor": {

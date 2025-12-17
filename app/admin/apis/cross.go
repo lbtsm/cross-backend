@@ -19,9 +19,9 @@ type CrossApi struct {
 // @Summary 获取跨链数据列表
 // @Description 获取跨链数据列表
 // @Tags 跨链数据管理
-// @Param fromChain query string false "来源链"
-// @Param toChain query string false "目标链"
-// @Param txHash query string false "交易hash，可以是源链、中继链、目标链的交易hash"
+// @Param srcChain query string false "来源链"
+// @Param dstChain query string false "目标链"
+// @Param srcTxHash query string false "源链交易hash"
 // @Param orderId query string false "跨链订单ID"
 // @Param pageSize query int false "页条数"
 // @Param pageIndex query int false "页码"
